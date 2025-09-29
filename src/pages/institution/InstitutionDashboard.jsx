@@ -1,21 +1,21 @@
 import { useState } from "react";
 import {
   Calendar,
-  Users,
   Award,
   BarChart2,
   Bell,
-  CheckCircle2,
   PlusCircle,
+  Upload,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/* ======================= Main Dashboard ======================= */
 export default function InstitutionDashboard() {
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState("upload");
 
   const tabs = [
+    { key: "upload", label: "Upload Alumni", icon: Upload },
     { key: "overview", label: "Overview", icon: BarChart2 },
-    { key: "alumni", label: "Alumni", icon: Users },
     { key: "events", label: "Events", icon: Calendar },
     { key: "leaderboard", label: "Leaderboard", icon: Award },
     { key: "notifications", label: "Notifications", icon: Bell },
@@ -48,58 +48,28 @@ export default function InstitutionDashboard() {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         <AnimatePresence mode="wait">
+          {tab === "upload" && (
+            <motion.div key="upload" {...tabMotion}>
+              <UploadAlumni />
+            </motion.div>
+          )}
           {tab === "overview" && (
-            <motion.div
-              key="overview"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div key="overview" {...tabMotion}>
               <Overview />
             </motion.div>
           )}
-          {tab === "alumni" && (
-            <motion.div
-              key="alumni"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Alumni />
-            </motion.div>
-          )}
           {tab === "events" && (
-            <motion.div
-              key="events"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div key="events" {...tabMotion}>
               <Events />
             </motion.div>
           )}
           {tab === "leaderboard" && (
-            <motion.div
-              key="leaderboard"
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div key="leaderboard" {...tabMotion}>
               <Leaderboard />
             </motion.div>
           )}
           {tab === "notifications" && (
-            <motion.div
-              key="notifications"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div key="notifications" {...tabMotion}>
               <Notifications />
             </motion.div>
           )}
@@ -109,8 +79,40 @@ export default function InstitutionDashboard() {
   );
 }
 
-/* --------- Tab Components --------- */
+const tabMotion = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+  transition: { duration: 0.3 },
+};
 
+/* ======================= Upload Alumni ======================= */
+function UploadAlumni() {
+  return (
+    <div className="flex flex-col items-center justify-center p-12 text-center">
+      <h2 className="text-3xl font-bold text-gray-800 mb-4">
+        Upload Alumni Data
+      </h2>
+      <p className="text-gray-600 mb-8">
+        Upload your alumni list in <span className="font-medium">CSV</span> or{" "}
+        <span className="font-medium">Excel</span> format.
+      </p>
+
+      <motion.label
+        whileHover={{ scale: 1.05 }}
+        className="cursor-pointer flex flex-col items-center gap-3 bg-blue-50 border-2 border-dashed border-blue-300 p-10 rounded-2xl shadow hover:shadow-lg transition"
+      >
+        <Upload className="w-10 h-10 text-blue-600" />
+        <span className="text-blue-700 font-medium">
+          Click to upload or drag & drop
+        </span>
+        <input type="file" accept=".csv, .xlsx" className="hidden" />
+      </motion.label>
+    </div>
+  );
+}
+
+/* ======================= Overview ======================= */
 function Overview() {
   return (
     <div>
@@ -126,68 +128,108 @@ function Overview() {
   );
 }
 
-function Alumni() {
-  const alumni = [
-    { id: 1, name: "John Doe", verified: false },
-    { id: 2, name: "Jane Smith", verified: true },
-  ];
-
-  return (
-    <div>
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Manage Alumni</h2>
-      <div className="space-y-4">
-        {alumni.map((a) => (
-          <motion.div
-            key={a.id}
-            whileHover={{ scale: 1.02 }}
-            className="flex items-center justify-between bg-white rounded-xl shadow-md p-5 border hover:border-blue-300 transition"
-          >
-            <span className="font-medium text-gray-700">{a.name}</span>
-            {a.verified ? (
-              <span className="flex items-center gap-1 text-blue-600 font-medium">
-                <CheckCircle2 className="w-5 h-5" /> Verified
-              </span>
-            ) : (
-              <button className="px-4 py-1.5 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                Verify
-              </button>
-            )}
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
+/* ======================= Events ======================= */
 function Events() {
-  const events = [
-    { title: "Annual Alumni Meet", date: "Oct 10, 2025", mode: "Hybrid" },
-    { title: "Tech Talk: AI in 2025", date: "Nov 5, 2025", mode: "Online" },
-  ];
+  const [events, setEvents] = useState([
+    {
+      title: "Annual Alumni Meet",
+      date: "Oct 10, 2025",
+      mode: "Hybrid",
+      details: "A grand meet-up of alumni and students.",
+    },
+    {
+      title: "Tech Talk: AI in 2025",
+      date: "Nov 5, 2025",
+      mode: "Online",
+      details: "Discussion on AI trends and future scope.",
+    },
+  ]);
+
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    date: "",
+    mode: "Offline",
+    details: "",
+  });
+
+  const addEvent = () => {
+    if (!newEvent.title || !newEvent.date) return;
+    setEvents([...events, newEvent]);
+    setNewEvent({ title: "", date: "", mode: "Offline", details: "" });
+  };
 
   return (
     <div>
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Events</h2>
-      <button className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition mb-6">
-        <PlusCircle className="w-5 h-5" /> Create Event
-      </button>
+
+      {/* Create Event Form */}
+      <div className="bg-white p-6 rounded-xl shadow-md border mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+          Create New Event
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <input
+            type="text"
+            placeholder="Event Title"
+            value={newEvent.title}
+            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+            className="border rounded-lg px-4 py-2"
+          />
+          <input
+            type="date"
+            value={newEvent.date}
+            onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+            className="border rounded-lg px-4 py-2"
+          />
+          <select
+            value={newEvent.mode}
+            onChange={(e) => setNewEvent({ ...newEvent, mode: e.target.value })}
+            className="border rounded-lg px-4 py-2"
+          >
+            <option>Offline</option>
+            <option>Online</option>
+            <option>Hybrid</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Event Details"
+            value={newEvent.details}
+            onChange={(e) =>
+              setNewEvent({ ...newEvent, details: e.target.value })
+            }
+            className="border rounded-lg px-4 py-2 col-span-2"
+          />
+        </div>
+        <button
+          onClick={addEvent}
+          className="mt-4 flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition"
+        >
+          <PlusCircle className="w-5 h-5" /> Add Event
+        </button>
+      </div>
+
+      {/* Events List */}
       <div className="grid gap-4">
         {events.map((ev, i) => (
-          <motion.div
+          <motion.details
             key={i}
             whileHover={{ scale: 1.02 }}
             className="bg-white p-5 rounded-xl shadow-md border hover:border-blue-300 transition"
           >
-            <h3 className="font-semibold text-lg text-gray-800">{ev.title}</h3>
-            <p className="text-sm text-gray-500">{ev.date}</p>
-            <p className="text-gray-600">{ev.mode}</p>
-          </motion.div>
+            <summary className="cursor-pointer font-semibold text-lg text-gray-800">
+              {ev.title}{" "}
+              <span className="ml-2 text-sm text-gray-500">({ev.mode})</span>
+            </summary>
+            <p className="mt-2 text-sm text-gray-600">📅 {ev.date}</p>
+            <p className="mt-1 text-gray-500">{ev.details}</p>
+          </motion.details>
         ))}
       </div>
     </div>
   );
 }
 
+/* ======================= Leaderboard ======================= */
 function Leaderboard() {
   const leaderboard = [
     { name: "Jane Smith", badges: 5 },
@@ -207,7 +249,9 @@ function Leaderboard() {
             <span className="text-gray-700 font-medium">
               {i + 1}. {l.name}
             </span>
-            <span className="font-semibold text-blue-600">{l.badges} Badges</span>
+            <span className="font-semibold text-blue-600">
+              {l.badges} Badges
+            </span>
           </motion.div>
         ))}
       </div>
@@ -215,15 +259,64 @@ function Leaderboard() {
   );
 }
 
+/* ======================= Notifications ======================= */
 function Notifications() {
-  const notifications = [
-    { id: 1, message: "New event posted: Annual Alumni Meet", read: false },
-    { id: 2, message: "John Doe verified as Alumni", read: true },
-  ];
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      message: "Jane Smith donated $5000 for infrastructure upgrade",
+      read: false,
+    },
+    {
+      id: 2,
+      message: "Library expansion funded by Alumni Batch of 2000",
+      read: false,
+    },
+    {
+      id: 3,
+      message: "Scholarship program initiated by Alumni Council",
+      read: true,
+    },
+  ]);
+
+  const [newNote, setNewNote] = useState("");
+
+  const addNotification = () => {
+    if (!newNote) return;
+    setNotifications([
+      { id: notifications.length + 1, message: newNote, read: false },
+      ...notifications,
+    ]);
+    setNewNote("");
+  };
 
   return (
     <div>
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Notifications</h2>
+
+      {/* Create Notification */}
+      <div className="bg-white p-6 rounded-xl shadow-md border mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+          Create Notification
+        </h3>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            placeholder="Enter notification message"
+            value={newNote}
+            onChange={(e) => setNewNote(e.target.value)}
+            className="flex-1 border rounded-lg px-4 py-2"
+          />
+          <button
+            onClick={addNotification}
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      {/* Notifications List */}
       <div className="space-y-3">
         {notifications.map((n) => (
           <motion.div
@@ -243,7 +336,7 @@ function Notifications() {
   );
 }
 
-/* --------- Reusable Stat Card --------- */
+/* ======================= Reusable Stat Card ======================= */
 function StatCard({ title, value }) {
   return (
     <motion.div
