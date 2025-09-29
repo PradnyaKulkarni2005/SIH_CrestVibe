@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import AlumniDashboard from "./pages/alumni/AlumniDashboard";
 import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
 import EventsPage from "./pages/EventsPage";
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/alumni" element={<AlumniDashboard />} />
         <Route path="/institutions" element={<InstitutionDashboard />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/students" element={<StudentDashboard />} />
 
       </Routes>
     </Router>
