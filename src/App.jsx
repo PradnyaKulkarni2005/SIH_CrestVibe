@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import SignIn from "./pages/Signin";
 import Register from "./pages/Register";
 import AlumniDashboard from "./pages/alumni/AlumniDashboard";
+import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
+import EventsPage from "./pages/EventsPage";
 
 export default function App() {
   return (
@@ -12,6 +14,9 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
         <Route path="/alumni" element={<AlumniDashboard />} />
+        <Route path="/institutions" element={<InstitutionDashboard />} />
+        <Route path="/events" element={<EventsPage />} />
+
       </Routes>
     </Router>
   );
