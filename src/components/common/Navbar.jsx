@@ -15,27 +15,7 @@ export default function Navbar() {
         <nav className="hidden md:flex gap-8 text-gray-700 font-medium items-center">
           <Link to="/" className="hover:text-blue-700">Home</Link>
 
-          {/* Simplified Platform Dropdown */}
-          <div className="relative group">
-            <button className="hover:text-blue-700">Platform ▾</button>
-            <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 p-3 w-64">
-              <Link to="/features/database" className="block py-1 px-2 hover:bg-gray-100 rounded">
-                Centralized Database
-              </Link>
-              <Link to="/features/authentication" className="block py-1 px-2 hover:bg-gray-100 rounded">
-                Authentication & Verification
-              </Link>
-              <Link to="/features/networking" className="block py-1 px-2 hover:bg-gray-100 rounded">
-                Communication & Networking
-              </Link>
-              <Link to="/features/events" className="block py-1 px-2 hover:bg-gray-100 rounded">
-                Events & Mentorship
-              </Link>
-              <Link to="/features/career" className="block py-1 px-2 hover:bg-gray-100 rounded">
-                Career Tracking & Donations
-              </Link>
-            </div>
-          </div>
+          
 
           {/* Stakeholders */}
           <Link to="/institutions" className="hover:text-blue-700">Institutions</Link>
